@@ -179,15 +179,19 @@ uint32_t SMT1_GetTimerValue()
 }
 
 volatile int16_t edgesCount;
-volatile int32_t edgesWidths[20];
+volatile int32_t edgesWidths[40];
 
 void SMT1_PR_ACQ_ISR(void)
 {
     LATC |= 0x20;
     // Disabling SMT1 period acquisition interrupt flag bit.
     PIR4bits.SMT1PRAIF = 0;
-    edgesWidths[edgesCount] = SMT1_GetCapturedPeriod();
-    edgesCount ++;
+    int32_t edge = SMT1_GetCapturedPeriod();
+    if(edge>40)
+    {
+        edgesWidths[edgesCount] = edge;
+        edgesCount++;
+    }
     LATC &= (~0x20);
 }
 /**

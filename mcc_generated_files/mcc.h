@@ -59,9 +59,9 @@
 #include "pwm3.h"
 #include "dac1.h"
 #include "clc3.h"
-#include "clc2.h"
 #include "clc1.h"
 #include "adc.h"
+#include "eusart.h"
 
 
 

@@ -52,6 +52,7 @@
 #include "clc3.h"
 #include "smt1.h"
 #include "pwm3.h"
+#include "stdio.h"
 
 /**
   Section: CLC3 APIs
@@ -90,8 +91,10 @@ void CLC3_Initialize(void)
 
 volatile uint16_t pwm = 500;
 extern volatile int16_t edgesCount;
-extern volatile int32_t edgesWidths[20];
+volatile int16_t edgesBuffer;
+extern volatile int32_t edgesWidths[40];
 volatile uint32_t meanWidth;
+volatile bool newValue = false;
 
 void CLC3_ISR(void)
 {
@@ -119,8 +122,10 @@ void CLC3_ISR(void)
                 meanWidth = meanWidth + edgesWidths[i];
             }
             meanWidth = meanWidth / edgesCount;
+            newValue = true;
+            edgesBuffer = edgesCount;
 
-            if(meanWidth > 250)
+/*            if(meanWidth > 250)
             {
                 if(pwm<800) pwm+=1;
             }
@@ -129,7 +134,7 @@ void CLC3_ISR(void)
                 if(pwm>200)pwm-=1;
             };
 
-            PWM3_LoadDutyValue(pwm);
+            PWM3_LoadDutyValue(pwm);*/
         }
         edgesCount = 0;
     }

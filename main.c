@@ -42,12 +42,18 @@
 */
 
 #include "mcc_generated_files/mcc.h"
+#include "stdio.h"
 
 /*
                          Main application
  */
 
 void manageLedsAndPwm(void);
+
+extern volatile uint32_t meanWidth;
+extern volatile bool newValue;
+extern volatile int16_t edgesBuffer;
+
 
 void main(void)
 {
@@ -71,8 +77,14 @@ void main(void)
     ADC_SelectChannel(5);
     TMR2_Start();
     PWM3_LoadDutyValue(300);
+    printf("aaa");
     while (1)
     {
+        if(newValue)
+        {
+            printf("%u-%u\r\n",edgesBuffer,meanWidth);
+            newValue = false;
+        }
       //  manageLedsAndPwm();
         // Add your application code
     }
