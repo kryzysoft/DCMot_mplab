@@ -62,6 +62,10 @@ void __interrupt() INTERRUPT_InterruptManager (void)
         {
             ADC_ISR();
         } 
+        else if(PIE3bits.CLC3IE == 1 && PIR3bits.CLC3IF == 1)
+        {
+            CLC3_ISR();
+        } 
         else if(PIE4bits.SMT1PRAIE == 1 && PIR4bits.SMT1PRAIF == 1)
         {
             SMT1_PR_ACQ_ISR();

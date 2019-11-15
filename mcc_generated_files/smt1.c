@@ -50,7 +50,6 @@
 
 #include <xc.h>
 #include "smt1.h"
-#include "pwm3.h"
 
 
 /**
@@ -62,8 +61,8 @@ void SMT1_Initialize(void)
     // WPOL high/rising edge enabled; STP rolls over to 24'h000000; SPOL high/rising edge enabled; EN enabled; SMT1PS 1:8 Prescaler; CPOL rising edge; 
     SMT1CON0 = 0x83;
 
-    // SMT1REPEAT Repeat Data Acquisition; SMT1MODE Period and Duty-Cycle Acquisition; SMT1GO disabled; 
-    SMT1CON1 = 0x42;
+    // SMT1REPEAT Repeat Data Acquisition; SMT1MODE Windowed measure; SMT1GO disabled; 
+    SMT1CON1 = 0x44;
 
     // SMT1CPWUP SMT1CPW1 update complete; SMT1CPRUP SMT1PR1 update complete; RST SMT1TMR1 update complete; 
     SMT1STAT = 0x00;
@@ -71,11 +70,11 @@ void SMT1_Initialize(void)
     // SMT1CSEL FOSC/4; 
     SMT1CLK = 0x01;
 
-    // SMT1WSEL SMTWINx; 
-    SMT1WIN = 0x00;
+    // SMT1WSEL C1_OUT_sync; 
+    SMT1WIN = 0x01;
 
-    // SMT1SSEL CLC2OUT; 
-    SMT1SIG = 0x08;
+    // SMT1SSEL SMTxSIG; 
+    SMT1SIG = 0x00;
 
     // SMT1PR 0; 
     SMT1PRU = 0x00;
@@ -85,6 +84,9 @@ void SMT1_Initialize(void)
 
     // SMT1PR 0; 
     SMT1PRL = 0x00;
+
+    // Enabling SMT1 period acquisition interrupt.
+    PIE4bits.SMT1PRAIE = 1;
 
     // Start the SMT module by writing to SMTxGO bit
     SMT1CON1bits.SMT1GO = 1;
@@ -176,28 +178,16 @@ uint32_t SMT1_GetTimerValue()
     return (SMT1TMR);
 }
 
-volatile uint16_t pwm = 500;
-volatile uint16_t counter = 0;
+volatile int16_t edgesCount;
+volatile int32_t edgesWidths[20];
 
 void SMT1_PR_ACQ_ISR(void)
 {
     LATC |= 0x20;
     // Disabling SMT1 period acquisition interrupt flag bit.
     PIR4bits.SMT1PRAIF = 0;
-    counter++;
-  //  if(counter>10)
-    {
-        if(SMT1_GetCapturedPeriod() < 500)
-        {
-            if(pwm>10)pwm-=1;
-        }
-        else
-        {
-            if(pwm<800)pwm+=1;
-        }
-        PWM3_LoadDutyValue(pwm);
-        counter = 0;
-    }
+    edgesWidths[edgesCount] = SMT1_GetCapturedPeriod();
+    edgesCount ++;
     LATC &= (~0x20);
 }
 /**

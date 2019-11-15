@@ -112,7 +112,7 @@ void PIN_MANAGER_Initialize(void)
     
 	
     RC0PPS = 0x0E;   //RC0->PWM3:PWM3OUT;    
-    CLCIN0PPS = 0x13;   //RC3->CLC2:CLCIN0;    
+    CLCIN0PPS = 0x13;   //RC3->CLC3:CLCIN0;    
     SMT1WINPPS = 0x0E;   //RB6->SMT1:SMT1WIN;    
     SMT1SIGPPS = 0x0C;   //RB4->SMT1:SMT1SIG;    
     RC6PPS = 0x04;   //RC6->CLC1:CLC1OUT;    

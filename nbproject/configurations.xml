@@ -20,6 +20,7 @@
         <itemPath>mcc_generated_files/cmp1.h</itemPath>
         <itemPath>mcc_generated_files/smt1.h</itemPath>
         <itemPath>mcc_generated_files/clc2.h</itemPath>
+        <itemPath>mcc_generated_files/clc3.h</itemPath>
       </logicalFolder>
     </logicalFolder>
     <logicalFolder name="LinkerScript"
@@ -45,6 +46,7 @@
         <itemPath>mcc_generated_files/dac1.c</itemPath>
         <itemPath>mcc_generated_files/smt1.c</itemPath>
         <itemPath>mcc_generated_files/clc2.c</itemPath>
+        <itemPath>mcc_generated_files/clc3.c</itemPath>
       </logicalFolder>
       <itemPath>main.c</itemPath>
     </logicalFolder>

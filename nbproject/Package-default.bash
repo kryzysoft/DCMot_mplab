@@ -10,9 +10,9 @@ CND_CONF=default
 CND_DISTDIR=dist
 TMPDIR=build/${CND_CONF}/${IMAGE_TYPE}/tmp-packaging
 TMPDIRNAME=tmp-packaging
-OUTPUT_PATH=dist/${CND_CONF}/${IMAGE_TYPE}/2019-11-06_DC_Motor.${IMAGE_TYPE}.${OUTPUT_SUFFIX}
-OUTPUT_BASENAME=2019-11-06_DC_Motor.${IMAGE_TYPE}.${OUTPUT_SUFFIX}
-PACKAGE_TOP_DIR=2019-11-06dcmotor/
+OUTPUT_PATH=dist/${CND_CONF}/${IMAGE_TYPE}/DCMot_mplab.${IMAGE_TYPE}.${OUTPUT_SUFFIX}
+OUTPUT_BASENAME=DCMot_mplab.${IMAGE_TYPE}.${OUTPUT_SUFFIX}
+PACKAGE_TOP_DIR=dcmotmplab/
 
 # Functions
 function checkReturnCode
@@ -57,15 +57,15 @@ mkdir -p ${TMPDIR}
 
 # Copy files and create directories and links
 cd "${TOP}"
-makeDirectory ${TMPDIR}/2019-11-06dcmotor/bin
+makeDirectory ${TMPDIR}/dcmotmplab/bin
 copyFileToTmpDir "${OUTPUT_PATH}" "${TMPDIR}/${PACKAGE_TOP_DIR}bin/${OUTPUT_BASENAME}" 0755
 
 
 # Generate tar file
 cd "${TOP}"
-rm -f ${CND_DISTDIR}/${CND_CONF}/package/2019-11-06dcmotor.tar
+rm -f ${CND_DISTDIR}/${CND_CONF}/package/dcmotmplab.tar
 cd ${TMPDIR}
-tar -vcf ../../../../${CND_DISTDIR}/${CND_CONF}/package/2019-11-06dcmotor.tar *
+tar -vcf ../../../../${CND_DISTDIR}/${CND_CONF}/package/dcmotmplab.tar *
 checkReturnCode
 
 # Cleanup

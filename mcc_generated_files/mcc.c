@@ -54,9 +54,10 @@ void SYSTEM_Initialize(void)
     CLC1_Initialize();
     CMP1_Initialize();
     ADC_Initialize();
+    CLC3_Initialize();
     CLC2_Initialize();
-    DAC1_Initialize();
     PWM3_Initialize();
+    DAC1_Initialize();
     SMT1_Initialize();
     TMR2_Initialize();
     TMR0_Initialize();
