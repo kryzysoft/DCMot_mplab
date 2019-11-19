@@ -159,7 +159,6 @@ void ADC_ISR(void)
         acumulationCount = 0;
         acumulatedResult = 0;
         result = result >> 2;
-        //if(result>10)result = result - 5;
         DAC1_SetOutput(result);
     }
     LATC = 0x00;

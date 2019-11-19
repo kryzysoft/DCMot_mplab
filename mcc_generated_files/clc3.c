@@ -89,12 +89,13 @@ void CLC3_Initialize(void)
     PIE3bits.CLC3IE = 1;
 }
 
-volatile uint16_t pwm = 500;
+volatile int32_t pwm = 500;
 extern volatile int16_t edgesCount;
 volatile int16_t edgesBuffer;
 extern volatile int32_t edgesWidths[40];
-volatile uint32_t meanWidth;
+volatile int32_t meanWidth;
 volatile bool newValue = false;
+volatile int32_t lastWidth = 0;
 
 void CLC3_ISR(void)
 {
@@ -124,17 +125,27 @@ void CLC3_ISR(void)
             meanWidth = meanWidth / edgesCount;
             newValue = true;
             edgesBuffer = edgesCount;
+            int32_t widthDiff = 500-meanWidth;
+            
+            int32_t vel = lastWidth - widthDiff;
+            pwm = pwm + widthDiff*(-100)/100 + vel*400/100;
+            
+            lastWidth = widthDiff;
 
-/*            if(meanWidth > 250)
+
+/*            if(meanWidth > 500)
             {
                 if(pwm<800) pwm+=1;
             }
             else
             {
                 if(pwm>200)pwm-=1;
-            };
+            };*/
+            
+            if(pwm>800)pwm = 800;
+            if(pwm<100)pwm = 100;
 
-            PWM3_LoadDutyValue(pwm);*/
+            PWM3_LoadDutyValue(pwm);
         }
         edgesCount = 0;
     }

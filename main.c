@@ -50,7 +50,7 @@
 
 void manageLedsAndPwm(void);
 
-extern volatile uint32_t meanWidth;
+extern volatile int32_t meanWidth;
 extern volatile bool newValue;
 extern volatile int16_t edgesBuffer;
 
