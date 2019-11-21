@@ -53,6 +53,7 @@
 #include "smt1.h"
 #include "pwm3.h"
 #include "stdio.h"
+#include "mathacc.h"
 
 /**
   Section: CLC3 APIs
@@ -89,12 +90,11 @@ void CLC3_Initialize(void)
     PIE3bits.CLC3IE = 1;
 }
 
-volatile int32_t pwm = 500;
+extern volatile int32_t pwm;
 extern volatile int16_t edgesCount;
-volatile int16_t edgesBuffer;
 extern volatile int32_t edgesWidths[40];
-volatile int32_t meanWidth;
-volatile bool newValue = false;
+extern volatile bool newValue;
+volatile int32_t meanWidth = 0;
 volatile int32_t lastWidth = 0;
 
 void CLC3_ISR(void)
@@ -115,38 +115,36 @@ void CLC3_ISR(void)
         SMT1TMRU = 0x00;
         SMT1TMRH = 0x00;
         SMT1CON0 = SMT1CON0 & (~0x80); // Disable SMT
-        meanWidth = 0;
+        
         if(edgesCount>0)
         {
+            meanWidth = 0;
             for(int32_t i=0; i<edgesCount; i++)
             {
                 meanWidth = meanWidth + edgesWidths[i];
             }
             meanWidth = meanWidth / edgesCount;
             newValue = true;
-            edgesBuffer = edgesCount;
-            int32_t widthDiff = 500-meanWidth;
+      //      int32_t widthDiff = 500-meanWidth;
             
-            int32_t vel = lastWidth - widthDiff;
-            pwm = pwm + widthDiff*(-100)/100 + vel*400/100;
+          //  int32_t vel = lastWidth - widthDiff;
+         //   pwm = pwm + widthDiff*(-100)/1600 + vel*100/800;
             
-            lastWidth = widthDiff;
-
-
-/*            if(meanWidth > 500)
-            {
-                if(pwm<800) pwm+=1;
-            }
-            else
-            {
-                if(pwm>200)pwm-=1;
-            };*/
+//            lastWidth = widthDiff;
+//            if(pwm>800)pwm = 800;
+//            if(pwm<200)pwm = 200;
+//            if(meanWidth > 500)
+//            {
+//                if(pwm<800) pwm+=1;
+//            }
+//            else
+//            {
+//                if(pwm>200)pwm-=1;
+//            };
+//      //      PWM3_LoadDutyValue(pwm);
             
-            if(pwm>800)pwm = 800;
-            if(pwm<100)pwm = 100;
-
-            PWM3_LoadDutyValue(pwm);
         }
+        MATHACC_PIDController(500, meanWidth);
         edgesCount = 0;
     }
 }

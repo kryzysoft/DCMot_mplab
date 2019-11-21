@@ -50,9 +50,9 @@
 
 void manageLedsAndPwm(void);
 
-extern volatile int32_t meanWidth;
-extern volatile bool newValue;
-extern volatile int16_t edgesBuffer;
+extern volatile uint8_t a, b, c, d;
+extern bool newValue;
+extern volatile int32_t value;
 
 
 void main(void)
@@ -82,7 +82,7 @@ void main(void)
     {
         if(newValue)
         {
-            printf("%u-%u\r\n",edgesBuffer,meanWidth);
+            printf("%d\r\n",value);
             newValue = false;
         }
       //  manageLedsAndPwm();

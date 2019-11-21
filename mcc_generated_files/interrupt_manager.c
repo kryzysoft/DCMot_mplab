@@ -78,6 +78,14 @@ void __interrupt() INTERRUPT_InterruptManager (void)
         {
             EUSART_RxDefaultInterruptHandler();
         } 
+        else if(PIE5bits.PID1EIE == 1 && PIR5bits.PID1EIF == 1)
+        {
+            MATHACC_Error_ISR();
+        } 
+        else if(PIE5bits.PID1DIE == 1 && PIR5bits.PID1DIF == 1)
+        {
+            MATHACC_PID_ISR();
+        } 
         else
         {
             //Unhandled Interrupt
