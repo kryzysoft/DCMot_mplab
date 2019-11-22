@@ -144,7 +144,7 @@ void CLC3_ISR(void)
 //      //      PWM3_LoadDutyValue(pwm);
             
         }
-        MATHACC_PIDController(500, meanWidth);
+        MATHACC_PIDController(250, meanWidth);
         edgesCount = 0;
     }
 }

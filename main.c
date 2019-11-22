@@ -53,6 +53,9 @@ void manageLedsAndPwm(void);
 extern volatile uint8_t a, b, c, d;
 extern bool newValue;
 extern volatile int32_t value;
+extern volatile int32_t meanWidth;
+extern volatile int32_t edgesWidths[40];
+extern volatile int16_t edgesCount;
 
 
 void main(void)
@@ -82,7 +85,12 @@ void main(void)
     {
         if(newValue)
         {
-            printf("%d\r\n",value);
+            int8_t i = 0;
+            for(i=0; i<10; i++)
+            {
+                printf("%d,",edgesWidths[i]);
+            }
+            printf("\r\n",edgesWidths[i]);
             newValue = false;
         }
       //  manageLedsAndPwm();

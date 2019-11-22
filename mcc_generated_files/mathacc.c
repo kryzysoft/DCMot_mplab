@@ -63,12 +63,12 @@ void MATHACC_Initialize(void)
     PID1CON = 0x85;
     
     
-    PID1K1H = (uint8_t) ((98 & 0xFF00) >> 8);
-    PID1K1L = (uint8_t)  (98 & 0x00FF);
-    PID1K2H = (uint8_t) ((-160 & 0xFF00) >> 8);
-    PID1K2L = (uint8_t)  (-160 & 0x00FF);
-    PID1K3H = (uint8_t) ((64 & 0xFF00) >> 8);
-    PID1K3L = (uint8_t)  (64 & 0x00FF);
+    PID1K1H = (uint8_t) ((888 & 0xFF00) >> 8);
+    PID1K1L = (uint8_t)  (888 & 0x00FF);
+    PID1K2H = (uint8_t) ((-924 & 0xFF00) >> 8);
+    PID1K2L = (uint8_t)  (-924 & 0x00FF);
+    PID1K3H = (uint8_t) ((78 & 0xFF00) >> 8);
+    PID1K3L = (uint8_t)  (78 & 0x00FF);
 
     PIR5bits.PID1DIF = 0;
     PIR5bits.PID1EIF = 0;
@@ -161,7 +161,7 @@ void MATHACC_PID_ISR( void )
 
     MATHACCResult matr = MATHACC_ResultGet();
 
-    newValue = true;
+
     a = matr.byteLL;
     b = matr.byteLH;
     c = matr.byteHL;
@@ -169,7 +169,7 @@ void MATHACC_PID_ISR( void )
     
     value = ((int32_t)a<<0) |((int32_t)b<<8) | ((int32_t)c<<16) | ((int32_t)d<<24);                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    
     value = value / 256;
-    pwm = pwm - value;
+    pwm = 450 - value;
     if(pwm<100)
     {
         pwm = 100;

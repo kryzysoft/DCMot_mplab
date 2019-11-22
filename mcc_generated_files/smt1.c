@@ -187,7 +187,7 @@ void SMT1_PR_ACQ_ISR(void)
     // Disabling SMT1 period acquisition interrupt flag bit.
     PIR4bits.SMT1PRAIF = 0;
     int32_t edge = SMT1_GetCapturedPeriod();
-    if(edge>100)
+   // if(edge>100)
     {
         edgesWidths[edgesCount] = edge;
         edgesCount++;
