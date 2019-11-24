@@ -58,8 +58,8 @@ void SYSTEM_Initialize(void)
     CMP1_Initialize();
     ADC_Initialize();
     CLC3_Initialize();
-    DAC1_Initialize();
     PWM3_Initialize();
+    DAC1_Initialize();
     MATHACC_Initialize();
     EUSART_Initialize();
 }
