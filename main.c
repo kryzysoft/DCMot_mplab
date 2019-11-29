@@ -67,69 +67,21 @@ void main(void)
     // Use the following macros to:
 
     // Enable the Global Interrupts
-    INTERRUPT_GlobalInterruptEnable();
+ //   INTERRUPT_GlobalInterruptEnable();
 
     // Enable the Peripheral Interrupts
-    INTERRUPT_PeripheralInterruptEnable();
+  //  INTERRUPT_PeripheralInterruptEnable();
 
     // Disable the Global Interrupts
     //INTERRUPT_GlobalInterruptDisable();
 
     // Disable the Peripheral Interrupts
     //INTERRUPT_PeripheralInterruptDisable();
-    ADC_SelectChannel(5);
     TMR2_Start();
-    PWM3_LoadDutyValue(300);
-    printf("aaa");
     while (1)
     {
-        if(newValue)
-        {
-            int8_t i = 0;
-            for(i=0; i<10; i++)
-            {
-                printf("%d,",edgesWidths[i]);
-            }
-            printf("\r\n",edgesWidths[i]);
-            newValue = false;
-        }
-      //  manageLedsAndPwm();
-        // Add your application code
     }
 }
-
-/*
-void manageLedsAndPwm(void)
-{
-        int16_t adcResult = ADC_GetConversion(5);
-        PWM3_LoadDutyValue(adcResult);
-        if(adcResult<204)
-        {
-            LATA = 0x00;
-            LATC = 0x00;
-        }
-        else if(adcResult<408)
-        {
-            LATA = 0x20;
-            LATC = 0x00;
-        }
-        else if(adcResult<612)
-        {
-            LATA = 0x22;
-            LATC = 0x00;
-        }
-        else if(adcResult<816)
-        {
-            LATA = 0x26;
-            LATC = 0x00;
-        }
-        else
-        {
-            LATA = 0x26;
-            LATC = 0x20;
-        }
-    
-}*/
 
 void CMP1_ISR();
 /**

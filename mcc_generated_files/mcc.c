@@ -51,17 +51,8 @@ void SYSTEM_Initialize(void)
 {
     PIN_MANAGER_Initialize();
     OSCILLATOR_Initialize();
-    SMT1_Initialize();
-    TMR2_Initialize();
-    TMR0_Initialize();
-    CLC1_Initialize();
-    CMP1_Initialize();
-    ADC_Initialize();
-    CLC3_Initialize();
     PWM3_Initialize();
-    DAC1_Initialize();
-    MATHACC_Initialize();
-    EUSART_Initialize();
+    TMR2_Initialize();
 }
 
 void OSCILLATOR_Initialize(void)
