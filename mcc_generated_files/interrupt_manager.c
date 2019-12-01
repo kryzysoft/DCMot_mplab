@@ -70,14 +70,6 @@ void __interrupt() INTERRUPT_InterruptManager (void)
         {
             SMT1_PR_ACQ_ISR();
         } 
-        else if(PIE1bits.TXIE == 1 && PIR1bits.TXIF == 1)
-        {
-            EUSART_TxDefaultInterruptHandler();
-        } 
-        else if(PIE1bits.RCIE == 1 && PIR1bits.RCIF == 1)
-        {
-            EUSART_RxDefaultInterruptHandler();
-        } 
         else if(PIE5bits.PID1EIE == 1 && PIR5bits.PID1EIF == 1)
         {
             MATHACC_Error_ISR();

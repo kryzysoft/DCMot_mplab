@@ -54,6 +54,7 @@
 #include "pwm3.h"
 #include "stdio.h"
 #include "mathacc.h"
+#include "main.h"
 
 /**
   Section: CLC3 APIs
@@ -90,63 +91,12 @@ void CLC3_Initialize(void)
     PIE3bits.CLC3IE = 1;
 }
 
-extern volatile int32_t pwm;
-extern volatile int16_t edgesCount;
-extern volatile int32_t edgesWidths[40];
-extern volatile bool newValue;
-volatile int32_t meanWidth = 0;
-volatile int32_t lastWidth = 0;
-
 void CLC3_ISR(void)
 {
     // Clear the CLC interrupt flag
     PIR3bits.CLC3IF = 0;
     
-    if((CLC3CON & 0x20) > 0)
-    {
-        SMT1CON0 = SMT1CON0 | 0x80; // Enable SMT
-        SMT1TMRL = 0x00;
-        SMT1TMRU = 0x00;
-        SMT1TMRH = 0x00;
-    }
-    else
-    {
-        SMT1TMRL = 0x00;
-        SMT1TMRU = 0x00;
-        SMT1TMRH = 0x00;
-        SMT1CON0 = SMT1CON0 & (~0x80); // Disable SMT
-        
-        if(edgesCount>0)
-        {
-            meanWidth = 0;
-            for(int32_t i=0; i<edgesCount; i++)
-            {
-                meanWidth = meanWidth + edgesWidths[i];
-            }
-            meanWidth = meanWidth / edgesCount;
-            newValue = true;
-      //      int32_t widthDiff = 500-meanWidth;
-            
-          //  int32_t vel = lastWidth - widthDiff;
-         //   pwm = pwm + widthDiff*(-100)/1600 + vel*100/800;
-            
-//            lastWidth = widthDiff;
-//            if(pwm>800)pwm = 800;
-//            if(pwm<200)pwm = 200;
-//            if(meanWidth > 500)
-//            {
-//                if(pwm<800) pwm+=1;
-//            }
-//            else
-//            {
-//                if(pwm>200)pwm-=1;
-//            };
-//      //      PWM3_LoadDutyValue(pwm);
-            
-        }
-        MATHACC_PIDController(500, meanWidth);
-        edgesCount = 0;
-    }
+    Clc3Interrupt();
 }
 
 bool CLC3_OutputStatusGet(void)

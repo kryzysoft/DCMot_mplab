@@ -51,6 +51,7 @@
 #include <xc.h>
 #include "mathacc.h"
 #include "pwm3.h"
+#include "main.h"
 
 /**
   Section: MATHACC APIs
@@ -158,27 +159,9 @@ volatile int32_t value;
 void MATHACC_PID_ISR( void )
 {
     PIR5bits.PID1DIF = 0;
-
-    MATHACCResult matr = MATHACC_ResultGet();
-
-
-    a = matr.byteLL;
-    b = matr.byteLH;
-    c = matr.byteHL;
-    d = matr.byteHH;
     
-    value = ((int32_t)a<<0) |((int32_t)b<<8) | ((int32_t)c<<16) | ((int32_t)d<<24);                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    
-    value = value / 256;
-    pwm = 450 - value;
-    if(pwm<100)
-    {
-        pwm = 100;
-    }
-    if(pwm>800)
-    {
-        pwm = 800;
-    }
-    PWM3_LoadDutyValue(pwm);
+    MathAccInterrupt();
+
     // user code here    
 }
 // end of file

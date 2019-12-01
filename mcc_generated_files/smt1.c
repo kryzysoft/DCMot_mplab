@@ -50,6 +50,7 @@
 
 #include <xc.h>
 #include "smt1.h"
+#include "main.h"
 
 
 /**
@@ -178,21 +179,13 @@ uint32_t SMT1_GetTimerValue()
     return (SMT1TMR);
 }
 
-volatile int16_t edgesCount;
-volatile int32_t edgesWidths[40];
-
 void SMT1_PR_ACQ_ISR(void)
 {
-    LATC |= 0x20;
+    
     // Disabling SMT1 period acquisition interrupt flag bit.
     PIR4bits.SMT1PRAIF = 0;
-    int32_t edge = SMT1_GetCapturedPeriod();
-   // if(edge>100)
-    {
-        edgesWidths[edgesCount] = edge;
-        edgesCount++;
-    }
-    LATC &= (~0x20);
+    
+    Smt1PrInterrupt();
 }
 /**
  End of File

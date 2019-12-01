@@ -52,6 +52,7 @@
 #include "adc.h"
 #include "device_config.h"
 #include "dac1.h"
+#include "main.h"
 
 
 /**
@@ -142,26 +143,11 @@ void ADC_TemperatureAcquisitionDelay(void)
     __delay_us(200);
 }
 
-volatile int16_t acumulatedResult = 0;
-volatile int16_t acumulationCount = 0;
-volatile int16_t result = 0;
-
 void ADC_ISR(void)
 {
     LATC = 0x10;
     // Clear the ADC interrupt flag
-    PIR1bits.ADIF = 0;
-    acumulationCount++;
-    acumulatedResult += ADC_GetConversionResult();
-    if(acumulationCount>=16)
-    {
-        result = acumulatedResult >> 4;
-        acumulationCount = 0;
-        acumulatedResult = 0;
-        result = result >> 2;
-        DAC1_SetOutput(result);
-    }
-    LATC = 0x00;
+    AdcInterrupt();
 }
 /**
  End of File

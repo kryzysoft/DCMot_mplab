@@ -48,15 +48,14 @@
                          Main application
  */
 
-void manageLedsAndPwm(void);
 
-extern volatile uint8_t a, b, c, d;
-extern bool newValue;
-extern volatile int32_t value;
-extern volatile int32_t meanWidth;
-extern volatile int32_t edgesWidths[40];
-extern volatile int16_t edgesCount;
+static volatile int32_t edgesWidths[40];
+static volatile int16_t edgesCount;
+static volatile int16_t acumulatedResult = 0;
+static volatile int16_t acumulationCount = 0;
 
+static volatile int16_t edgesCount;
+static volatile int32_t edgesWidths[40];
 
 void main(void)
 {
@@ -79,59 +78,88 @@ void main(void)
     //INTERRUPT_PeripheralInterruptDisable();
     ADC_SelectChannel(5);
     TMR2_Start();
-    PWM3_LoadDutyValue(300);
-    printf("aaa");
     while (1)
     {
-        if(newValue)
-        {
-            int8_t i = 0;
-            for(i=0; i<10; i++)
-            {
-                printf("%d,",edgesWidths[i]);
-            }
-            printf("\r\n",edgesWidths[i]);
-            newValue = false;
-        }
-      //  manageLedsAndPwm();
-        // Add your application code
     }
 }
 
-/*
-void manageLedsAndPwm(void)
+void AdcInterrupt(void)
 {
-        int16_t adcResult = ADC_GetConversion(5);
-        PWM3_LoadDutyValue(adcResult);
-        if(adcResult<204)
-        {
-            LATA = 0x00;
-            LATC = 0x00;
-        }
-        else if(adcResult<408)
-        {
-            LATA = 0x20;
-            LATC = 0x00;
-        }
-        else if(adcResult<612)
-        {
-            LATA = 0x22;
-            LATC = 0x00;
-        }
-        else if(adcResult<816)
-        {
-            LATA = 0x26;
-            LATC = 0x00;
-        }
-        else
-        {
-            LATA = 0x26;
-            LATC = 0x20;
-        }
-    
-}*/
+    int16_t result = 0;
+    PIR1bits.ADIF = 0;
+    acumulationCount++;
+    acumulatedResult += ADC_GetConversionResult();
+    if(acumulationCount>=16)
+    {
+        result = acumulatedResult >> 4;
+        acumulationCount = 0;
+        acumulatedResult = 0;
+        result = result >> 2;
+        DAC1_SetOutput(result);
+    }
+    LATC = 0x00;
+}
 
-void CMP1_ISR();
+void Clc3Interrupt(void)
+{
+    int32_t meanWidth;
+    
+    if((CLC3CON & 0x20) > 0)
+    {
+        SMT1CON0 = SMT1CON0 | 0x80; // Enable SMT
+        SMT1TMRL = 0x00;
+        SMT1TMRU = 0x00;
+        SMT1TMRH = 0x00;
+    }
+    else
+    {
+        SMT1TMRL = 0x00;
+        SMT1TMRU = 0x00;
+        SMT1TMRH = 0x00;
+        SMT1CON0 = SMT1CON0 & (~0x80); // Disable SMT
+        
+        if(edgesCount>0)
+        {
+            meanWidth = 0;
+            for(int32_t i=0; i<edgesCount; i++)
+            {
+                meanWidth = meanWidth + edgesWidths[i];
+            }
+            meanWidth = meanWidth / edgesCount;
+        }
+        MATHACC_PIDController(500, meanWidth);
+        edgesCount = 0;
+    }
+}
+
+void MathAccInterrupt(void)
+{
+    int32_t pwm;
+    
+    MATHACCResult matr = MATHACC_ResultGet();
+  
+    int32_t value = ((int32_t)matr.byteLL<<0) |((int32_t)matr.byteLH<<8)
+            | ((int32_t)matr.byteHL<<16) | ((int32_t)matr.byteHH<<24);
+    value = value / 256;
+    pwm = 450 - value;
+    if(pwm<100)
+    {
+        pwm = 100;
+    }
+    if(pwm>800)
+    {
+        pwm = 800;
+    }
+    PWM3_LoadDutyValue(pwm);
+}
+
+void Smt1PrInterrupt(void)
+{
+    int32_t edge = SMT1_GetCapturedPeriod();
+    edgesWidths[edgesCount] = edge;
+    edgesCount++;
+}
+
 /**
  End of File
 */
